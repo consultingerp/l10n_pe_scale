@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="purchase_order_form_scale" model="ir.ui.view">
+		<field name="name">ppurchase.order.form.inherit.scale</field>
+		<field name="model">purchase.order</field>
+		<field name="inherit_id" ref="purchase.purchase_order_form"/>
+		<field name="arch" type="xml">
+			<field name="partner_ref" position="after">
+				<a style="cursor: pointer;" onClick="askWeight()"><i class="fa fa-scale"></i> Leer peso</a>
+				<script type="text/javascript">
+					function askWeight(){
+						var urlParams = new URLSearchParams('?'+window.location.hash.substr(1));
+						var purchaseId = urlParams.get('id');
+						window.fetch('http://localhost:8071/test',{
+							method:'POST',
+							headers:{
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({'test':1})
+						}).then(res => res.json())
+						.then(function(data){
+							window.fetch('http://localhost:8071/l10n_pe_scale?'+$.param({
+								purchase: purchaseId,
+								weight: data.result.weight
+							}),{
+								method:'GET'
+							}).then(function(data){
+								window.location.reload();
+							});
+						});
+					}
+				</script>
+			</field>
+		</field>
+	</record>
+</odoo>
